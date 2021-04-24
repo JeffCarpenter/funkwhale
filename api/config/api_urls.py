@@ -10,7 +10,6 @@ from funkwhale_api.music import views
 from funkwhale_api.playlists import views as playlists_views
 from funkwhale_api.subsonic.views import SubsonicViewSet
 from funkwhale_api.tags import views as tags_views
-from funkwhale_api.users import jwt_views
 
 router = common_routers.OptionalSlashRouter()
 router.register(r"activity", activity_views.ActivityViewSet, "activity")
@@ -84,8 +83,6 @@ v1_patterns += [
         r"^oauth/",
         include(("funkwhale_api.users.oauth.urls", "oauth"), namespace="oauth"),
     ),
-    url(r"^token/?$", jwt_views.obtain_jwt_token, name="token"),
-    url(r"^token/refresh/?$", jwt_views.refresh_jwt_token, name="token_refresh"),
     url(r"^rate-limit/?$", common_views.RateLimitView.as_view(), name="rate-limit"),
     url(
         r"^text-preview/?$", common_views.TextPreviewView.as_view(), name="text-preview"

@@ -10,7 +10,6 @@ from allauth.account import models as allauth_models
 from rest_auth.serializers import PasswordResetSerializer as PRS
 from rest_auth.registration.serializers import RegisterSerializer as RS, get_adapter
 from rest_framework import serializers
-from rest_framework_jwt import serializers as jwt_serializers
 
 from funkwhale_api.activity import serializers as activity_serializers
 from funkwhale_api.common import authentication
@@ -40,15 +39,6 @@ class ASCIIUsernameValidator(validators.RegexValidator):
 
 username_validators = [ASCIIUsernameValidator()]
 NOOP = object()
-
-
-class JSONWebTokenSerializer(jwt_serializers.JSONWebTokenSerializer):
-    def validate(self, data):
-        try:
-            return super().validate(data)
-        except authentication.UnverifiedEmail as e:
-            authentication.send_email_confirmation(self.context["request"], e.user)
-            raise serializers.ValidationError("Please verify your email address.")
 
 
 class RegisterSerializer(RS):

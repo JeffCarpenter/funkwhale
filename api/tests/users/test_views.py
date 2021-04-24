@@ -134,42 +134,6 @@ def test_can_fetch_data_from_api(api_client, factories):
     )
 
 
-def test_can_get_token_via_api(api_client, factories):
-    user = factories["users.User"]()
-    url = reverse("api:v1:token")
-    payload = {"username": user.username, "password": "test"}
-
-    response = api_client.post(url, payload)
-    assert response.status_code == 200
-    assert "token" in response.data
-
-
-def test_can_get_token_via_api_inactive(api_client, factories):
-    user = factories["users.User"](is_active=False)
-    url = reverse("api:v1:token")
-    payload = {"username": user.username, "password": "test"}
-
-    response = api_client.post(url, payload)
-    assert response.status_code == 400
-
-
-def test_can_refresh_token_via_api(api_client, factories, mocker):
-    # first, we get a token
-    user = factories["users.User"]()
-    url = reverse("api:v1:token")
-    payload = {"username": user.username, "password": "test"}
-
-    response = api_client.post(url, payload)
-    assert response.status_code == 200
-
-    token = response.data["token"]
-    url = reverse("api:v1:token_refresh")
-    response = api_client.post(url, {"token": token})
-
-    assert response.status_code == 200
-    assert "token" in response.data
-
-
 def test_changing_password_updates_secret_key(logged_in_api_client):
     user = logged_in_api_client.user
     password = user.password
@@ -486,40 +450,6 @@ def test_signup_with_approval_enabled_validation_error(
     }
     response = api_client.post(url, data, format="json")
     assert response.status_code == 400
-
-
-def test_user_login_jwt(factories, api_client):
-    user = factories["users.User"]()
-    data = {
-        "username": user.username,
-        "password": "test",
-    }
-    url = reverse("api:v1:token")
-    response = api_client.post(url, data)
-    assert response.status_code == 200
-
-
-@pytest.mark.parametrize(
-    "setting_value, verified_email, expected_status_code",
-    [
-        ("mandatory", False, 400),
-        ("mandatory", True, 200),
-        ("optional", False, 200),
-        ("optional", True, 200),
-    ],
-)
-def test_user_login_jwt_honor_email_verification(
-    setting_value, verified_email, expected_status_code, settings, factories, api_client
-):
-    settings.ACCOUNT_EMAIL_VERIFICATION = setting_value
-    user = factories["users.User"](verified_email=verified_email)
-    data = {
-        "username": user.username,
-        "password": "test",
-    }
-    url = reverse("api:v1:token")
-    response = api_client.post(url, data)
-    assert response.status_code == expected_status_code
 
 
 def test_login_via_api(api_client, factories):

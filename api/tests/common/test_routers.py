@@ -22,8 +22,6 @@ from django import urls
         "/api/v1/manage/accounts",
         "/api/v1/oauth/apps",
         "/api/v1/moderation/content-filters",
-        "/api/v1/token",
-        "/api/v1/token/refresh",
         "/api/v1/instance/settings",
         "/api/v1/instance/nodeinfo/2.0",
     ],

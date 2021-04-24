@@ -25,7 +25,6 @@ celery~=4.4.0
 django-cors-headers~=3.4.0
 musicbrainzngs~=0.7.1
 djangorestframework~=3.11.0
-djangorestframework-jwt~=1.11.0
 arrow~=0.15.5
 persisting-theory~=0.2.0
 django-versatileimagefield~=2.0.0

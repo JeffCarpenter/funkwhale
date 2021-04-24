@@ -812,13 +812,6 @@ def get_user_secret_key(user):
     return settings.SECRET_KEY + str(user.secret_key)
 
 
-JWT_AUTH = {
-    "JWT_ALLOW_REFRESH": True,
-    "JWT_EXPIRATION_DELTA": datetime.timedelta(days=7),
-    "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=30),
-    "JWT_AUTH_HEADER_PREFIX": "JWT",
-    "JWT_GET_USER_SECRET_KEY": get_user_secret_key,
-}
 OLD_PASSWORD_FIELD_ENABLED = True
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -857,9 +850,6 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "funkwhale_api.common.authentication.OAuth2Authentication",
         "funkwhale_api.common.authentication.ApplicationTokenAuthentication",
-        "funkwhale_api.common.authentication.JSONWebTokenAuthenticationQS",
-        "funkwhale_api.common.authentication.BearerTokenHeaderAuth",
-        "funkwhale_api.common.authentication.JSONWebTokenAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
@@ -998,14 +988,6 @@ THROTTLING_RATES = {
         "rate": THROTTLING_USER_RATES.get("login", "30/hour"),
         "description": "Login",
     },
-    "jwt-login": {
-        "rate": THROTTLING_USER_RATES.get("jwt-login", "30/hour"),
-        "description": "JWT token creation",
-    },
-    "jwt-refresh": {
-        "rate": THROTTLING_USER_RATES.get("jwt-refresh", "30/hour"),
-        "description": "JWT token refresh",
-    },
     "signup": {
         "rate": THROTTLING_USER_RATES.get("signup", "10/day"),
         "description": "Account creation",
@@ -1052,7 +1034,6 @@ REST_AUTH_SERIALIZERS = {
     "PASSWORD_RESET_SERIALIZER": "funkwhale_api.users.serializers.PasswordResetSerializer"  # noqa
 }
 REST_SESSION_LOGIN = False
-REST_USE_JWT = True
 
 ATOMIC_REQUESTS = False
 USE_X_FORWARDED_HOST = True

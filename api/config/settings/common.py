@@ -2,7 +2,6 @@
 from __future__ import absolute_import, unicode_literals
 
 from collections import OrderedDict
-import datetime
 import logging.config
 import sys
 

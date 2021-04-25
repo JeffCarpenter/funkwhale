@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.utils.encoding import smart_text
 from django.utils.translation import ugettext as _
 
 from django.core.cache import cache

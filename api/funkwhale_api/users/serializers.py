@@ -12,7 +12,6 @@ from rest_auth.registration.serializers import RegisterSerializer as RS, get_ada
 from rest_framework import serializers
 
 from funkwhale_api.activity import serializers as activity_serializers
-from funkwhale_api.common import authentication
 from funkwhale_api.common import models as common_models
 from funkwhale_api.common import preferences
 from funkwhale_api.common import serializers as common_serializers

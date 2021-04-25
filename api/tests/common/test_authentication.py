@@ -1,8 +1,5 @@
 import pytest
 
-from rest_framework import exceptions
-from rest_framework_jwt.settings import api_settings as jwt_settings
-
 from funkwhale_api.common import authentication
 
 

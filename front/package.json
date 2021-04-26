@@ -8,7 +8,7 @@
     "serve": "[ ! -d src/translations ] && npm run i18n-compile; vue-cli-service serve --port ${VUE_PORT:-8080} --host ${VUE_HOST:-0.0.0.0}",
     "build": "scripts/i18n-compile.sh && vue-cli-service build",
     "test:unit": "vue-cli-service test:unit --reporter mocha-junit-reporter",
-    "lint": "eslint $(git status --porcelain --untracked-files=no | grep '^ M ' | cut -d' ' -f3 | sed s_front/__ | grep -E '.(js|vue)$')",
+    "lint": "eslint $(git status --porcelain --untracked-files=no | grep -E '(A|M) ' | cut -d' ' -f3 | sed s_front/__ | grep -E '.(js|vue)$')",
     "i18n-compile": "scripts/i18n-compile.sh",
     "i18n-extract": "scripts/i18n-extract.sh",
     "fix-fomantic-css": "scripts/fix-fomantic-css.sh",

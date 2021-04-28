@@ -46,7 +46,6 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@vue/cli-plugin-babel": "~4.2.2",
-    "@vue/cli-plugin-eslint": "~4.2.2",
     "@vue/cli-plugin-pwa": "~4.2.2",
     "@vue/cli-plugin-unit-mocha": "~4.2.2",
     "@vue/cli-service": "~4.2.2",

@@ -165,6 +165,13 @@ def discard_unused_icons(rule):
         ".wrench",
         ".x",
         ".key",
+        ".cog",
+        ".life.ring",
+        ".language",
+        ".palette",
+        ".sun",
+        ".moon",
+        ".gitlab"
     ]
     if ":before" not in rule["lines"][0]:
         return False

@@ -214,6 +214,10 @@
             }
         }
     }
+    .ui.user-dropdown .ui.menu {
+        left: auto;
+        right: 0;
+    }
     .ui.user-dropdown>.text>.label {
         margin-right: 0;
     }

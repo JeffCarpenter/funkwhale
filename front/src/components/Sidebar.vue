@@ -76,20 +76,9 @@
           </div>
           <span v-else class="visually-hidden">{{ labels.notifications }}</span>
         </router-link>
-        <div class="item">
-          <div class="ui user-dropdown dropdown" >
-            <img class="ui avatar image" alt="" v-if="$store.state.auth.profile.avatar && $store.state.auth.profile.avatar.urls.medium_square_crop" :src="$store.getters['instance/absoluteUrl']($store.state.auth.profile.avatar.urls.medium_square_crop)" />
-            <actor-avatar v-else :actor="{preferred_username: $store.state.auth.username, full_username: $store.state.auth.username}" />
-            <div class="menu">
-              <router-link class="item" :to="{name: 'profile.overview', params: {username: $store.state.auth.username}}"><translate translate-context="*/*/*/Noun">Profile</translate></router-link>
-              <router-link class="item" :to="{path: '/settings'}"><translate translate-context="*/*/*/Noun">Settings</translate></router-link>
-              <router-link class="item" :to="{name: 'logout'}"><translate translate-context="Sidebar/Login/List item.Link/Verb">Logout</translate></router-link>
-            </div>
-          </div>
-        </div>
+        <user-menu v-on="$listeners"></user-menu>
       </template>
       <div class="item collapse-button-wrapper">
-
         <button
           @click="isCollapsed = !isCollapsed"
           :class="['ui', 'basic', 'big', {'vibrant': !isCollapsed}, 'inverted icon', 'collapse', 'button']">
@@ -167,6 +156,7 @@ import { mapState, mapActions, mapGetters } from "vuex"
 
 import Logo from "@/components/Logo"
 import SearchBar from "@/components/audio/SearchBar"
+import UserMenu from "@/components/common/UserMenu"
 
 import $ from "jquery"
 
@@ -174,7 +164,8 @@ export default {
   name: "sidebar",
   components: {
     SearchBar,
-    Logo
+    Logo,
+    UserMenu
   },
   data() {
     return {

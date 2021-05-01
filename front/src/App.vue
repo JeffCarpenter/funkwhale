@@ -9,7 +9,7 @@
       :key="url"
     >
     <template>
-      <sidebar></sidebar>
+      <sidebar @show:shortcuts-modal="showShortcutsModal = !showShortcutsModal"></sidebar>
       <set-instance-modal @update:show="showSetInstanceModal = $event" :show="showSetInstanceModal"></set-instance-modal>
       <service-messages></service-messages>
       <transition name="queue">

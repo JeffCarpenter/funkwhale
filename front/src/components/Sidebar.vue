@@ -7,12 +7,8 @@
         <span class="visually-hidden">Home</span>
       </i>
     </router-link>
-    <router-link v-if="!$store.state.auth.authenticated" class="logo-wrapper" :to="{name: logoUrl}" :title="'Funkwhale'">
-      <img src="../assets/logo/text-white.svg" alt="" />
-    </router-link>
     <nav class="top ui compact right aligned inverted text menu">
-      <template v-if="$store.state.auth.authenticated">
-
+      <template>
         <div class="right menu">
           <div class="item" :title="labels.administration" v-if="$store.state.auth.availablePermissions['settings'] || $store.state.auth.availablePermissions['moderation']">
             <div class="item ui inline admin-dropdown dropdown">
@@ -311,6 +307,10 @@ export default {
           this.$nextTick(() => {
             this.setupDropdown('.user-dropdown')
             this.setupDropdown('.admin-dropdown')
+          })
+        } else {
+            this.$nextTick(() => {
+              this.setupDropdown('.user-dropdown')
           })
         }
       }

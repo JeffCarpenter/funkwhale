@@ -1,21 +1,22 @@
 <template>
   <div class="item">
-    <div class="ui user-dropdown dropdown">
+    <div class="ui user-dropdown dropdown desktop-and-up">
       <img 
         class="ui avatar image"
         alt=""
-        v-if="$store.state.auth.profile.avatar && $store.state.auth.profile.avatar.urls.medium_square_crop"
+        v-if="$store.state.auth.authenticated && $store.state.auth.profile.avatar && $store.state.auth.profile.avatar.urls.medium_square_crop"
         :src="$store.getters['instance/absoluteUrl']($store.state.auth.profile.avatar.urls.medium_square_crop)"/>
       <actor-avatar
-        v-else
+        v-else-if="$store.state.auth.authenticated"
         :actor="{preferred_username: $store.state.auth.username, full_username: $store.state.auth.username,}"/>
+      <i v-else class="cog icon" />
       <div class="ui menu">
         <div class="ui scrolling dropdown item">
           <i class="language icon" />
           {{ labels.language }}
           <i class="dropdown icon" />
           <div id="language-select" class="menu">
-            <a class="item" @click="$store.dispatch('ui/currentLanguage', key)" v-for="(language, key) in $language.available" :key="key" :value="key">{{ language }}</a>
+            <a :class="[{'active': $language.current === key},'item']" @click="$store.dispatch('ui/currentLanguage', key)" v-for="(language, key) in $language.available" :key="key" :value="key">{{ language }}</a>
           </div>
         </div>
         <div class="ui dropdown item">
@@ -23,18 +24,18 @@
           {{ labels.theme }}
           <i class="dropdown icon" />
           <div id="theme-select" class="menu">
-            <a class="item" @click="$store.dispatch('ui/theme', theme.key)" v-for="theme in themes" :key="theme.key" :value="theme.key">
+            <a :class="[{'active': $store.state.ui.theme === theme.key}, 'item']" @click="$store.dispatch('ui/theme', theme.key)" v-for="theme in themes" :key="theme.key" :value="theme.key">
               <i :class="theme.icon" /> 
               {{ theme.name }}
             </a>
           </div>
         </div>
-        <div class="divider" />
-        <router-link class="item" :to="{name: 'profile.overview', params: { username: $store.state.auth.username },}">
+        <div v-if="$store.state.auth.authenticated" class="divider" />
+        <router-link v-if="$store.state.auth.authenticated" class="item" :to="{name: 'profile.overview', params: { username: $store.state.auth.username },}">
           <i class="user icon" />
           {{ labels.profile }}
         </router-link>
-        <router-link class="item" :to="{ path: '/settings' }">
+        <router-link v-if="$store.state.auth.authenticated" class="item" :to="{ path: '/settings' }">
           <i class="cog icon" />
           {{ labels.settings }}
         </router-link>
@@ -71,18 +72,46 @@
             {{ labels.about }}
           </router-link>
         <div class="divider" />
-        <router-link class="item" style="color: var(--danger-color)!important;" :to="{ name: 'logout' }">
+        <router-link v-if="$store.state.auth.authenticated" class="item" style="color: var(--danger-color)!important;" :to="{ name: 'logout' }">
           <i class="sign out alternate icon" />
           {{ labels.logout }}
         </router-link>
+        <router-link v-else class="item" :to="{ name: 'signup' }">
+          <i class="user icon" />
+          {{ labels.signup }}
+        </router-link>
       </div>
     </div>
+    <div @click="$refs.userModal.show = true" class="ui tablet-and-below">
+      <img 
+        class="ui avatar image"
+        alt=""
+        v-if="$store.state.auth.authenticated && $store.state.auth.profile.avatar && $store.state.auth.profile.avatar.urls.medium_square_crop"
+        :src="$store.getters['instance/absoluteUrl']($store.state.auth.profile.avatar.urls.medium_square_crop)"/>
+      <actor-avatar
+        v-else-if="$store.state.auth.authenticated"
+        :actor="{preferred_username: $store.state.auth.username, full_username: $store.state.auth.username,}"/>
+      <i v-else class="cog icon" />
+    </div>
+    <user-modal
+      ref="userModal"
+      class="large"
+      :login="labels.login"
+      :signup="labels.signup"
+      :logout="labels.logout"
+      @created="$refs.userModal.show = false;">
+    </user-modal>
   </div>
 </template>
 
 <script>
 
+import UserModal from '@/components/common/UserModal'
+
 export default {
+  components: {
+    UserModal
+  },
   computed: {
     labels() {
       return {
@@ -98,6 +127,8 @@ export default {
         theme: this.$pgettext("Footer/Settings/Dropdown.Label/Short, Verb", "Change theme"),
         chat: this.$pgettext("Sidebar/*/Listitem.Link", "Chat room"),
         git: this.$pgettext("Footer/*/List item.Link", "Issue tracker"),
+        login: this.$pgettext('*/*/Button.Label/Verb', "Log in"),
+        signup: this.$pgettext('*/*/Button.Label/Verb', "Sign up"),
       }
     },
     themes () {
@@ -118,7 +149,8 @@ export default {
   methods: {
     showShortcuts() 
       { 
-        this.$emit('show:shortcuts-modal') 
+        this.$emit('show:shortcuts-modal')
+        console.log(this.$store.getters['ui/windowSize'])
       }
   }
 }

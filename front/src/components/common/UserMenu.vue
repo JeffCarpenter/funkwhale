@@ -1,6 +1,6 @@
 <template>
   <div class="item">
-    <div class="ui user-dropdown dropdown desktop-and-up">
+    <div id="user-menu" class="ui user-dropdown dropdown desktop-and-up">
       <img 
         class="ui avatar image"
         alt=""
@@ -10,6 +10,9 @@
         v-else-if="$store.state.auth.authenticated"
         :actor="{preferred_username: $store.state.auth.username, full_username: $store.state.auth.username,}"/>
       <i v-else class="cog icon" />
+      <div v-if="$store.state.ui.notifications.inbox + additionalNotifications > 0" :class="['ui', 'accent', 'mini', 'bottom floating', 'circular', 'label']">
+        {{ $store.state.ui.notifications.inbox + additionalNotifications }}
+      </div>
       <div class="ui menu">
         <div class="ui scrolling dropdown item">
           <i class="language icon" />
@@ -30,15 +33,21 @@
             </a>
           </div>
         </div>
-        <div v-if="$store.state.auth.authenticated" class="divider" />
-        <router-link v-if="$store.state.auth.authenticated" class="item" :to="{name: 'profile.overview', params: { username: $store.state.auth.username },}">
-          <i class="user icon" />
-          {{ labels.profile }}
-        </router-link>
-        <router-link v-if="$store.state.auth.authenticated" class="item" :to="{ path: '/settings' }">
-          <i class="cog icon" />
-          {{ labels.settings }}
-        </router-link>
+        <template v-if="$store.state.auth.authenticated">
+          <div class="divider" />
+          <router-link class="item" :to="{name: 'profile.overview', params: { username: $store.state.auth.username },}">
+            <i class="user icon" />
+            {{ labels.profile }}
+          </router-link>
+          <router-link class="item" v-if="$store.state.auth.authenticated" :to="{name: 'notifications'}">
+            <i class="bell icon"></i>
+            {{ labels.notifications }}
+          </router-link>
+          <router-link class="item" :to="{ path: '/settings' }">
+            <i class="cog icon" />
+            {{ labels.settings }}
+          </router-link>
+        </template>
         <div class="divider" />
           <div class="ui dropdown item">
             <i class="life ring outline icon" />
@@ -67,19 +76,24 @@
             <i class="keyboard icon" />
             {{ labels.shortcuts }}
           </a>
-          <router-link v-if="this.$route.path != '/about'" class="item" to="/about">
+          <router-link v-if="this.$route.path != '/about'" class="item" :to="{ name: 'about' }">
             <i class="question circle outline icon" />
             {{ labels.about }}
           </router-link>
-        <div class="divider" />
-        <router-link v-if="$store.state.auth.authenticated" class="item" style="color: var(--danger-color)!important;" :to="{ name: 'logout' }">
-          <i class="sign out alternate icon" />
-          {{ labels.logout }}
-        </router-link>
-        <router-link v-else class="item" :to="{ name: 'signup' }">
-          <i class="user icon" />
-          {{ labels.signup }}
-        </router-link>
+        <template v-if="$store.state.auth.authenticated && this.$route.path != '/logout'">
+          <div class="divider" />
+          <router-link class="item" style="color: var(--danger-color)!important;" :to="{ name: 'logout' }">
+            <i class="sign out alternate icon" />
+            {{ labels.logout }}
+          </router-link>
+        </template>
+        <template v-else-if="!$store.state.auth.authenticated && this.$route.path != '/signup'">
+          <div class="divider" />
+          <router-link class="item" :to="{ name: 'signup' }">
+            <i class="user icon" />
+            {{ labels.signup }}
+          </router-link>
+        </template>
       </div>
     </div>
     <div @click="$refs.userModal.show = true" class="ui tablet-and-below">
@@ -107,6 +121,8 @@
 <script>
 
 import UserModal from '@/components/common/UserModal'
+import $ from 'jquery'
+import { mapGetters } from "vuex"
 
 export default {
   components: {
@@ -129,6 +145,7 @@ export default {
         git: this.$pgettext("Footer/*/List item.Link", "Issue tracker"),
         login: this.$pgettext('*/*/Button.Label/Verb', "Log in"),
         signup: this.$pgettext('*/*/Button.Label/Verb', "Sign up"),
+        notifications: this.$pgettext("*/Notifications/*", 'Notifications'),
       }
     },
     themes () {
@@ -144,14 +161,20 @@ export default {
           key: 'dark'
         }
       ]
-    }
+    },
+    ...mapGetters({
+      additionalNotifications: "ui/additionalNotifications",
+    }),
   },
   methods: {
-    showShortcuts() 
-      { 
-        this.$emit('show:shortcuts-modal')
-        console.log(this.$store.getters['ui/windowSize'])
-      }
+    showShortcuts() { 
+      this.$emit('show:shortcuts-modal')
+      console.log(this.$store.getters['ui/windowSize'])
+    },
+    showLanguageMenu() {
+      $(this.$el).find('#user-menu').dropdown('hide')
+      $(this.$el).find('#language-menu').dropdown('show');
+    }
   }
 }
 </script>

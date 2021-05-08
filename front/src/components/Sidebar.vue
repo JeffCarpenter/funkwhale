@@ -65,13 +65,6 @@
         <i class="upload icon"></i>
         <span class="visually-hidden">{{ labels.addContent }}</span>
         </router-link>
-        <router-link class="item" v-if="$store.state.auth.authenticated" :to="{name: 'notifications'}">
-          <i class="bell icon"></i>
-          <div v-if="$store.state.ui.notifications.inbox + additionalNotifications > 0" :class="['ui', 'accent', 'mini', 'bottom floating', 'circular', 'label']">
-            {{ $store.state.ui.notifications.inbox + additionalNotifications }}
-          </div>
-          <span v-else class="visually-hidden">{{ labels.notifications }}</span>
-        </router-link>
         <user-menu v-on="$listeners"></user-menu>
       </template>
       <div class="item collapse-button-wrapper">
@@ -148,7 +141,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from "vuex"
+import { mapState, mapActions } from "vuex"
 
 import Logo from "@/components/Logo"
 import SearchBar from "@/components/audio/SearchBar"
@@ -183,9 +176,6 @@ export default {
     })
   },
   computed: {
-    ...mapGetters({
-      additionalNotifications: "ui/additionalNotifications",
-    }),
     ...mapState({
       queue: state => state.queue,
       url: state => state.route.path
@@ -201,7 +191,6 @@ export default {
         selectTrack,
         pendingReviewEdits,
         addContent: this.$pgettext("*/Library/*/Verb", 'Add content'),
-        notifications: this.$pgettext("*/Notifications/*", 'Notifications'),
         administration: this.$pgettext("Sidebar/Admin/Title/Noun", 'Administration'),
       }
     },

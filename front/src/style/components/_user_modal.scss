@@ -1,0 +1,31 @@
+.ui.overlay.fullscreen.modal {
+  .user-modal-title,
+  .user-modal-subtitle {
+    margin: 0.1em;
+  }
+  .user-modal-subtitle {
+    font-weight: normal;
+  }
+  .user-modal.list-icon {
+    margin-right: 1em;
+  }
+  .user-modal.list-item {
+    font-weight: bold;
+    font-size: large;
+  }
+  a {
+    color: var(--text-color);
+    text-decoration: none ;
+  }
+}
+
+.scrolling.dimmable.dimmed {
+  > .dimmer {
+    overflow: auto;
+    --webkit-overflow-scrolling: touch;
+  }
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+}

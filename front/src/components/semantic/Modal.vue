@@ -1,6 +1,6 @@
 <template>
-  <div :class="['ui', {'active': show}, {'overlay fullscreen': fullscreen && ['phone', 'tablet'].indexOf($store.getters['ui/windowSize']) > -1},'modal']">
-    <i class="close inside icon"></i>
+  <div :class="additionalClasses.concat(['ui', {'active': show}, {'scrolling': scrolling} ,{'overlay fullscreen': fullscreen && ['phone', 'tablet'].indexOf($store.getters['ui/windowSize']) > -1},'modal'])">
+    <i tabindex=0 class="close inside icon"></i>
     <slot v-if="show">
 
     </slot>
@@ -15,6 +15,8 @@ export default {
   props: {
     show: {type: Boolean, required: true},
     fullscreen: {type: Boolean, default: true},
+    scrolling: {type: Boolean, required: false, default: false},
+    additionalClasses: {type: Array, required: false, default: () => []}
   },
   data () {
     return {
@@ -61,6 +63,7 @@ export default {
           this.control.modal('show')
           this.focusTrap.activate()
           this.focusTrap.unpause()
+          document.body.classList.add('scrolling')
         } else {
           if (this.control) {
             this.$emit('hide')
@@ -68,6 +71,7 @@ export default {
             this.control.remove()
             this.focusTrap.deactivate()
             this.focusTrap.pause()
+            document.body.classList.remove('scrolling')
           }
         }
       }

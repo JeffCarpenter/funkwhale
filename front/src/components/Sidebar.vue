@@ -65,8 +65,43 @@
         <i class="upload icon"></i>
         <span class="visually-hidden">{{ labels.addContent }}</span>
         </router-link>
-        <user-menu v-on="$listeners"></user-menu>
+        <template v-if="width > 768">
+          <div class="item">
+            <div class="ui user-dropdown dropdown">
+              <img 
+                class="ui avatar image"
+                alt=""
+                v-if="$store.state.auth.authenticated && $store.state.auth.profile.avatar && $store.state.auth.profile.avatar.urls.medium_square_crop"
+                :src="$store.getters['instance/absoluteUrl']($store.state.auth.profile.avatar.urls.medium_square_crop)"/>
+              <actor-avatar
+                v-else-if="$store.state.auth.authenticated"
+                :actor="{preferred_username: $store.state.auth.username, full_username: $store.state.auth.username,}"/>
+              <i v-else class="cog icon" />
+              <div v-if="$store.state.ui.notifications.inbox + additionalNotifications > 0" :class="['ui', 'accent', 'mini', 'bottom floating', 'circular', 'label']">
+                {{ $store.state.ui.notifications.inbox + additionalNotifications }}
+              </div>
+              <user-menu :width="width" v-on="$listeners"></user-menu>
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <a href="" class="item" @click.prevent.exact="showUserModal = !showUserModal">
+            <img 
+              class="ui avatar image"
+              alt=""
+              v-if="$store.state.auth.authenticated && $store.state.auth.profile.avatar && $store.state.auth.profile.avatar.urls.medium_square_crop"
+              :src="$store.getters['instance/absoluteUrl']($store.state.auth.profile.avatar.urls.medium_square_crop)"/>
+            <actor-avatar
+              v-else-if="$store.state.auth.authenticated"
+              :actor="{preferred_username: $store.state.auth.username, full_username: $store.state.auth.username,}"/>
+            <i v-else class="cog icon" />
+            <div v-if="$store.state.ui.notifications.inbox + additionalNotifications > 0" :class="['ui', 'accent', 'mini', 'bottom floating', 'circular', 'label']">
+              {{ $store.state.ui.notifications.inbox + additionalNotifications }}
+            </div>
+          </a>
+        </template>
       </template>
+      <user-modal @update:show="showUserModal = $event" :show="showUserModal"></user-modal>
       <div class="item collapse-button-wrapper">
         <button
           @click="isCollapsed = !isCollapsed"
@@ -141,8 +176,8 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex"
-
+import { mapState, mapActions, mapGetters } from "vuex"
+import UserModal from "@/components/common/UserModal";
 import Logo from "@/components/Logo"
 import SearchBar from "@/components/audio/SearchBar"
 import UserMenu from "@/components/common/UserMenu"
@@ -151,10 +186,14 @@ import $ from "jquery"
 
 export default {
   name: "sidebar",
+  props: {
+    width: {type: Number, required: true}
+  },
   components: {
     SearchBar,
     Logo,
-    UserMenu
+    UserMenu,
+    UserModal,
   },
   data() {
     return {
@@ -163,6 +202,7 @@ export default {
       fetchInterval: null,
       exploreExpanded: false,
       myLibraryExpanded: false,
+      showUserModal: false,
     }
   },
   destroy() {
@@ -179,6 +219,9 @@ export default {
     ...mapState({
       queue: state => state.queue,
       url: state => state.route.path
+    }),
+    ...mapGetters({
+      additionalNotifications: "ui/additionalNotifications",
     }),
     labels() {
       let mainMenu = this.$pgettext('Sidebar/*/Hidden text', "Main menu")

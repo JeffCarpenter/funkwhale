@@ -9,7 +9,7 @@
       :key="url"
     >
     <template>
-      <sidebar @show:shortcuts-modal="showShortcutsModal = !showShortcutsModal"></sidebar>
+      <sidebar :width="width" @show:set-instance-modal="showSetInstanceModal = !showSetInstanceModal" @show:shortcuts-modal="showShortcutsModal = !showShortcutsModal"></sidebar>
       <set-instance-modal @update:show="showSetInstanceModal = $event" :show="showSetInstanceModal"></set-instance-modal>
       <service-messages></service-messages>
       <transition name="queue">
@@ -17,12 +17,6 @@
       </transition>
       <router-view role="main" :class="{hidden: $store.state.ui.queueFocused}"></router-view>
       <player ref="player"></player>
-      <app-footer
-        :class="{hidden: $store.state.ui.queueFocused}"
-        :version="version"
-        @show:shortcuts-modal="showShortcutsModal = !showShortcutsModal"
-        @show:set-instance-modal="showSetInstanceModal = !showSetInstanceModal"
-      ></app-footer>
       <playlist-modal v-if="$store.state.auth.authenticated"></playlist-modal>
       <channel-upload-modal v-if="$store.state.auth.authenticated"></channel-upload-modal>
       <filter-modal v-if="$store.state.auth.authenticated"></filter-modal>
@@ -37,10 +31,9 @@
 import Vue from 'vue'
 import axios from 'axios'
 import _ from '@/lodash'
-import {mapState, mapGetters, mapActions} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import { WebSocketBridge } from 'django-channels'
 import GlobalEvents from '@/components/utils/global-events'
-import moment from  'moment'
 import locales from './locales'
 import {getClientOnlyRadio} from '@/radios'
 
@@ -52,7 +45,6 @@ export default {
     PlaylistModal:  () => import(/* webpackChunkName: "auth-audio" */ "@/components/playlists/PlaylistModal"),
     ChannelUploadModal:  () => import(/* webpackChunkName: "auth-audio" */ "@/components/channels/UploadModal"),
     Sidebar:  () => import(/* webpackChunkName: "core" */ "@/components/Sidebar"),
-    AppFooter:  () => import(/* webpackChunkName: "core" */ "@/components/Footer"),
     ServiceMessages:  () => import(/* webpackChunkName: "core" */ "@/components/ServiceMessages"),
     SetInstanceModal:  () => import(/* webpackChunkName: "core" */ "@/components/SetInstanceModal"),
     ShortcutsModal:  () => import(/* webpackChunkName: "core" */ "@/components/ShortcutsModal"),
@@ -67,6 +59,7 @@ export default {
       showShortcutsModal: false,
       showSetInstanceModal: false,
       initialTitle: document.title,
+      width: window.innerWidth
     }
   },
   async created () {
@@ -82,7 +75,8 @@ export default {
         }
       );
     }
-
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
     this.openWebsocket()
     let self = this
     if (!this.$store.state.ui.selectedLanguage) {
@@ -293,6 +287,9 @@ export default {
       this.$store.commit('ui/serviceWorker', {updateAvailable: false})
       if (!this.serviceWorker.registration || !this.serviceWorker.registration.waiting) { return; }
       this.serviceWorker.registration.waiting.postMessage({command: 'skipWaiting'})
+    },
+    handleResize() {
+      this.width = window.innerWidth
     }
   },
   computed: {

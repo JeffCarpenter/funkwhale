@@ -67,6 +67,7 @@ export default {
       showShortcutsModal: false,
       showSetInstanceModal: false,
       initialTitle: document.title,
+      width: window.innerWidth
     }
   },
   async created () {
@@ -82,7 +83,8 @@ export default {
         }
       );
     }
-
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
     this.openWebsocket()
     let self = this
     if (!this.$store.state.ui.selectedLanguage) {
@@ -293,6 +295,9 @@ export default {
       this.$store.commit('ui/serviceWorker', {updateAvailable: false})
       if (!this.serviceWorker.registration || !this.serviceWorker.registration.waiting) { return; }
       this.serviceWorker.registration.waiting.postMessage({command: 'skipWaiting'})
+    },
+    handleResize() {
+      this.width = window.innerWidth
     }
   },
   computed: {

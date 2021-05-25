@@ -303,11 +303,13 @@ Typical workflow for a contribution
 2. If working on an issue, assign yourself to the issue. Otherwise, consider open an issue before starting to work on something, especially for new features.
 3. Create a dedicated branch for your work ``42-awesome-fix``. It is good practice to prefix your branch name with the ID of the issue you are solving.
 4. Work on your stuff
-5. Commit small, atomic changes to make it easier to review your contribution
-6. Add a changelog fragment to summarize your changes: ``echo "Implemented awesome stuff (#42)" > changes/changelog.d/42.feature``
-7. Push your branch
-8. Create your merge request
-9. Take a step back and enjoy, we're really grateful you did all of this and took the time to contribute!
+5. [Optional] Consider running ``yarn lint`` in ``front`` if you changed something there. Consider fixing some
+   linting errors in the files you touched.
+6. Commit small, atomic changes to make it easier to review your contribution
+7. Add a changelog fragment to summarize your changes: ``echo "Implemented awesome stuff (#42)" > changes/changelog.d/42.feature``
+8. Push your branch
+9. Create your merge request
+10. Take a step back and enjoy, we're really grateful you did all of this and took the time to contribute!
 
 Changelog management
 --------------------

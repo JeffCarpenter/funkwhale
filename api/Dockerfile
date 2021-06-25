@@ -59,6 +59,8 @@ RUN apk add --no-cache \
     jpeg-dev \
     ffmpeg             \
     libpq              \
+    libxml2 \
+    libxslt \
     && \
     \
     ln -s /usr/bin/python3 /usr/bin/python

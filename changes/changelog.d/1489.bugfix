@@ -1,0 +1,1 @@
+Add worker-src to nginx header to prevent issues (#1489)

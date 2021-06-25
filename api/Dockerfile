@@ -17,6 +17,8 @@ RUN \
     openldap-dev \
     openssl-dev \
     cargo \
+    libxml2 \
+    libxslt \
     && \
     \
     ln -s /usr/bin/python3 /usr/bin/python

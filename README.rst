@@ -18,7 +18,7 @@ Contribute
 ----------
 
 Contribution guidelines as well as development installation instructions
-are outlined in `CONTRIBUTING <CONTRIBUTING.rst>`_.
+are outlined in `CONTRIBUTING <https://dev.funkwhale.audio/funkwhale/funkwhale/-/blob/develop/CONTRIBUTING.rst>`_.
 
 Security issues and vulnerabilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -33,7 +33,7 @@ This will ensure only maintainers and developpers have access to the vulnerabili
 Translate
 ^^^^^^^^^
 
-Translators willing to help can refer to `TRANSLATORS <TRANSLATORS.rst>`_ for instructions.
+Translators willing to help can refer to `TRANSLATORS <https://dev.funkwhale.audio/funkwhale/funkwhale/-/blob/develop/TRANSLATORS.rst>`_ for instructions.
 
 Code of Conduct
 ---------------
